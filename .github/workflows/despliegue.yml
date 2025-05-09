@@ -1,0 +1,115 @@
+name: CI/CD a tope
+
+#evento para que se deployee cuando se hace el push
+#on:
+#  push:   #evento a hacer en este caso cuando hagamos un push
+#    branches:   #en la rama main
+#      - main
+
+#Este evento es para que solo se deployee si se lo digo manualmente
+on:
+ workflow_dispatch:
+
+jobs:
+#job para desplegar infraestructura de terraform
+  despliegue:   
+    runs-on: ubuntu-latest
+
+    outputs:
+      instance_public_ip: ${{ steps.capturar_ip_ec2.outputs.instance_public_ip }}
+      instance_public_ip_ldap: ${{ steps.capturar_ip_ec2_ldap.outputs.instance_public_ip_ldap }}
+      
+    steps:   
+      - name: Checkout  
+        uses: actions/checkout@v4  
+      
+      - name: Configurar credenciales aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1" 
+          
+      #este paso es para instalar terraform en la maquina virtual
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        id: init
+        run: terraform init
+        working-directory: ./archivos-tf
+       
+      - name: Plan Terraform
+        run: terraform plan
+        working-directory: ./archivos-tf
+  
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ./archivos-tf
+
+      - name: Subir tfstate al bucket de S3
+        run: aws s3 cp terraform.tfstate s3://${{ secrets.AWS_S3_BUCKET }}/ --region us-east-1 
+        working-directory: ./archivos-tf
+
+      - name: Capturar ip de la EC2
+        id: capturar_ip_ec2
+        run: echo "instance_public_ip=$(terraform output -raw instance_public_ip)" >> "$GITHUB_OUTPUT"
+        working-directory: ./archivos-tf
+
+      - name: Capturar ip de la EC2 de ldap
+        id: capturar_ip_ec2_ldap
+        run: echo "instance_public_ip_ldap=$(terraform output -raw instance_public_ip_ldap)" >> "$GITHUB_OUTPUT"
+        working-directory: ./archivos-tf  
+
+  #segundo job
+  entrar-instancias:
+    runs-on: ubuntu-latest
+    needs: despliegue
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Crear archivo private key
+        run: |
+          echo "${{ secrets.DEPLOYER_KEY }}" > deploy_key.pem
+          chmod 600 deploy_key.pem
+
+      #para la instancia de servidor web y de aplicaciones
+      - name: Subir carpeta con docker-compose y archivos necesarios
+        run: |
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-conf-script ec2-user@${{ needs.despliegue.outputs.instance_public_ip }}:/home/ec2-user/archivos-conf-script
+
+      - name: Subir carpeta con certificados de bego.work.gd
+        run: |
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-bego ec2-user@${{ needs.despliegue.outputs.instance_public_ip }}:/home/ec2-user/archivos-conf-script/cert-bego
+
+      - name: Subir carpeta con certificados de bego1.work.gd
+        run: |
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-bego1 ec2-user@${{ needs.despliegue.outputs.instance_public_ip }}:/home/ec2-user/archivos-conf-script/cert-bego1
+
+      - name: Ejecutar script como root en EC2
+        run: |
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} \
+            "sudo bash /home/ec2-user/archivos-conf-script/deploy-docker-compose.sh"
+
+      #para la instancia de ldap
+      - name: Subir carpeta con archivos necesarios
+        run: |
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-ec2-ldap ec2-user@${{ needs.despliegue.outputs.instance_public_ip_ldap }}:/home/ec2-user/archivos
+
+      - name: lanzar contenedor de ldap
+        run: |
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ needs.despliegue.outputs.instance_public_ip_ldap }} << 'EOF'
+            sudo usermod -aG docker ubuntu
+            newgrp docker
+            sudo systemctl restart docker
+            sudo chmod +x ./archivos/script.sh
+            sudo ./archivos/script.sh
+            sleep 30
+          EOF
+
+      - name: Borrar archivo private key
+        run: |
+          rm -f deploy_key.pem    
