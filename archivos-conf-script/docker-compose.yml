@@ -25,6 +25,7 @@ services:
       - "8080:8080"
     volumes:
       - ./webapps/:/usr/local/tomcat/webapps/
+      - ./server.xml:/usr/local/tomcat/conf/server.xml
     networks:
       - app-network
 

@@ -13,6 +13,7 @@ COPY ./usuario.ldif ./usuario.ldif
 
 # Copiar el script de inicialización al contenedor
 COPY ./add-ldif.sh ./add-ldif.sh
+
 #ejecutarlo
 RUN chmod +x add-ldif.sh && \
     ./add-ldif.sh
