@@ -1,0 +1,33 @@
+services:
+  apache:
+    #el build: .  seria para hacerlo desde un dockerfile
+    #build: .
+    #y asi simplemente coges una imagen ya hecha de dockerhub
+    image: httpd:2.4
+    container_name: apache
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf  
+      - ./cert-bego:/usr/local/apache2/certs/bego:ro 
+      - ./cert-bego1:/usr/local/apache2/certs/bego1:ro  
+    networks:
+      - app-network
+    depends_on:
+      - tomcat
+    restart: unless-stopped  
+
+  tomcat:
+    image: tomcat:9.0
+    container_name: tomcat
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./webapps/:/usr/local/tomcat/webapps/
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

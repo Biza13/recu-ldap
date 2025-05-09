@@ -1,0 +1,6 @@
+dn: uid=admin,ou=empleados,dc=begona,dc=work,dc=gd
+objectClass: inetOrgPerson
+cn: admin
+sn: Bego
+uid: admin
+userPassword: admin

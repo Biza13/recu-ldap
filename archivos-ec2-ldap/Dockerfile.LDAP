@@ -1,0 +1,28 @@
+#FROM osixia/openldap:latest
+FROM osixia/openldap:1.5.0
+
+# Variables de entorno para ldap
+ENV LDAP_ORGANISATION="MiRestaurante"
+ENV LDAP_DOMAIN="begona.work.gd"
+# comento esta linea porque me da erro me dice que no ponga informacion sensible
+# ENV LDAP_ADMIN_PASSWORD="admin"
+
+#copiar los archivos ldif al contenedor
+COPY ./empleados.ldif ./empleados.ldif
+COPY ./usuario.ldif ./usuario.ldif
+
+# Copiar el script de inicialización al contenedor
+COPY ./add-ldif.sh ./add-ldif.sh
+#ejecutarlo
+RUN chmod +x add-ldif.sh && \
+    ./add-ldif.sh
+
+RUN sed -i '/buster-backports/d' /etc/apt/sources.list && \
+    apt -y update && \
+    apt install -y ldap-utils && \
+    apt install nano && \
+    # Limpiar los archivos de cache de apt para reducir el tamaño de la imagen
+    apt clean
+
+EXPOSE 636
+EXPOSE 389

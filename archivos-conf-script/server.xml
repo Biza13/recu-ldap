@@ -1,0 +1,55 @@
+<!-- Localizacion de este archivo: /usr/local/tomcat/conf/server.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<Server port="8005" shutdown="SHUTDOWN">
+    <!-- Global JNDI resources -->
+    <GlobalNamingResources>
+        <Resource name="UserDatabase" auth="Container"
+                  type="org.apache.catalina.UserDatabase"
+                  description="User database that can be updated and saved"
+                  factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+                  pathname="conf/tomcat-users.xml" />
+    </GlobalNamingResources>
+
+    <!-- Service configuration -->
+    <Service name="Catalina">
+        <!-- Connector for HTTP -->
+        <Connector port="8080" protocol="HTTP/1.1"
+                   connectionTimeout="20000"
+                   redirectPort="8443" />
+
+        <!-- Connector for HTTPS (optional, if needed) -->
+        <!--
+        <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+                   maxThreads="200"
+                   SSLEnabled="true">
+            <SSLHostConfig>
+                <Certificate certificateKeystoreFile="conf/keystore.jks"
+                             type="RSA" />
+            </SSLHostConfig>
+        </Connector>
+        -->
+
+        <!-- Engine and Host configuration -->
+        <Engine name="Catalina" defaultHost="localhost">
+            <!-- Add the JNDIRealm for LDAP authentication -->
+            <Realm className="org.apache.catalina.realm.JNDIRealm"
+                   connectionURL="ldap://<ip-elastica>:389"
+                   userBase="ou=empleados,dc=begona,dc=work,dc=gd"
+                   userSearch="(uid={0})"
+                   userRoleName="memberOf"
+                   roleBase="ou=roles,dc=begona,dc=work,dc=gd"
+                   roleSearch="(uniqueMember={0})"
+                   roleSubtree="true"
+                   connectionName="cn=admin,dc=begona,dc=work,dc=gd"
+                   connectionPassword="admin" />
+
+            <!-- Default host -->
+            <Host name="localhost" appBase="webapps"
+                  unpackWARs="true" autoDeploy="true">
+                <Valve className="org.apache.catalina.valves.AccessLogValve"
+                       directory="logs" prefix="localhost_access_log" suffix=".txt"
+                       pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+            </Host>
+        </Engine>
+    </Service>
+</Server>
