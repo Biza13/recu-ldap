@@ -32,7 +32,7 @@
         <Engine name="Catalina" defaultHost="localhost">
             <!-- Add the JNDIRealm for LDAP authentication -->
             <Realm className="org.apache.catalina.realm.JNDIRealm"
-                   connectionURL="ldap://eipalloc-06144df752b6f4606:389"
+                   connectionURL="ldap://72.44.52.139:389"
                    userBase="ou=empleados,dc=begona,dc=work,dc=gd"
                    userSearch="(uid={0})"
                    userRoleName="memberOf"
