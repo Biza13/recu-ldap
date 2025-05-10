@@ -59,7 +59,7 @@ jobs:
 
       - name: Capturar ip de la EC2 de ldap
         id: capturar_ip_ec2_ldap
-        run: echo "instance_private_ip_ldap=$(terraform output -raw instance_ptivate_ip_ldap)" >> "$GITHUB_OUTPUT"
+        run: echo "instance_private_ip_ldap=$(terraform output -raw instance_private_ip_ldap)" >> "$GITHUB_OUTPUT"
         working-directory: ./archivos-tf  
 
   #segundo job
