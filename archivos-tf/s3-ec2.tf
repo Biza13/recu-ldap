@@ -103,7 +103,7 @@ resource "aws_security_group" "security-ldap" {
     from_port = 22
     to_port = 22
     protocol="tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [aws_security_group.security.id]
   }
 
   # Permitir tráfico LDAP desde el grupo de seguridad del servidor web y aplicaciones
