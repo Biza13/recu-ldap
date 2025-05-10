@@ -79,41 +79,41 @@ jobs:
       #para la instancia de servidor web y de aplicaciones
       - name: Subir carpeta con docker-compose y archivos necesarios
         run: |
-          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-conf-script ec2-user@${{ secrets.ELASTI_IP }}:/home/ec2-user/archivos-conf-script
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-conf-script ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script
 
       - name: Subir carpeta con certificados de bego.work.gd
         run: |
-          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-bego ec2-user@${{ secrets.ELASTI_IP }}:/home/ec2-user/archivos-conf-script/cert-bego
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-bego ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script/cert-bego
 
       - name: Subir carpeta con certificados de bego1.work.gd
         run: |
-          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-bego1 ec2-user@${{ secrets.ELASTI_IP }}:/home/ec2-user/archivos-conf-script/cert-bego1
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-bego1 ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script/cert-bego1
 
       - name: Ejecutar script como root en EC2
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTI_IP }} \
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTIC_IP }} \
             "sudo bash /home/ec2-user/archivos-conf-script/deploy-docker-compose.sh"
 
       #para la instancia de ldap
       - name: Subir carpeta con archivos necesarios de la instancia ldap a la instancia del servidor web
         run: |
-          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-ec2-ldap ec2-user@${{ secrets.ELASTI_IP }}:/home/ec2-user/archivos-ldap
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-ec2-ldap ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-ldap
 
       - name: Copiar clave privada a la instancia del servidor web para poder conectarse a la instancia de ldap
         run: |
-          scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ secrets.ELASTI_IP }}:/home/ec2-user/deploy_key.pem
+          scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/deploy_key.pem
 
       # Transferir carpeta desde servidor web a LDAP usando la IP privada
       - name: Transferir carpeta desde servidor web a LDAP
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTI_IP }} << 'EOF'
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTIC_IP }} << 'EOF'
             scp -o StrictHostKeyChecking=no -i /home/ec2-user/deploy_key.pem -r /home/ec2-user/archivos-ldap ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }}:/home/ec2-user/archivos-ldap
           EOF
 
       # Lanzar el contenedor LDAP en la instancia LDAP
       - name: Lanzar contenedor LDAP
         run: |
-          ssh -tt -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTI_IP }} << 'EOF'
+          ssh -tt -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTIC_IP }} << 'EOF'
             ssh -tt -i /home/ec2-user/deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }} << 'INNER_EOF'
               sudo chmod +x /home/ec2-user/archivos-ldap/ec2.sh
               sudo /home/ec2-user/archivos-ldap/ec2.sh
