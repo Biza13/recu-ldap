@@ -117,8 +117,6 @@ jobs:
             ssh -i /home/ec2-user/deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }} << 'INNER_EOF'
               sudo chmod +x /home/ec2-user/archivos-ldap/ec2.sh
               sudo /home/ec2-user/archivos-ldap/ec2.sh
-              sudo chmod +x /home/ec2-user/archivos-ldap/script.sh
-              sudo /home/ec2-user/archivos-ldap/script.sh
               sleep 30
             INNER_EOF
           EOF
