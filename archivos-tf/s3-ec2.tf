@@ -136,7 +136,7 @@ resource "aws_instance" "instancia_ldap" {
     Name = "instancia LDAP"
   }
 
-  user_data = file("../archivos-conf-script/ec2.sh")
+  user_data = file("../archivos-ec2-ldap/ec2.sh")
 }
 
 #bucket s3 para guardar tf state
