@@ -7,3 +7,5 @@ cidrSubredPublica = "10.0.101.0/24"
 cidrSubredPrivada = "10.0.1.0/24"
 
 s3 = "cubo-s3-begona"
+
+id_eip = "eipalloc-06144df752b6f4606"

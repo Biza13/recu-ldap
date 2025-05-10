@@ -28,3 +28,8 @@ variable "public_key" {
   type        = string
   default = ""
 }
+
+variable "id_eip" {
+  description = "id de la ip elastica"
+  type = string
+}
