@@ -3,7 +3,7 @@ output "instance_public_ip" {
   value = aws_instance.instancia_fedora.public_ip
 }
 
-output "instance_public_ip_ldap" {
+output "instance_private_ip_ldap" {
   description = "IP publica de instancia EC2 de ldap"
-  value = aws_instance.instancia_ldap.public_ip
+  value = aws_instance.instancia_ldap.private_ip
 }
