@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo usermod -aG docker ubuntu
+sudo usermod -aG docker ec2-user
 newgrp docker
 sudo systemctl restart docker
 sleep 30
