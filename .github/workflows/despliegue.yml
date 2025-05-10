@@ -17,7 +17,7 @@ jobs:
 
     outputs:
       instance_public_ip: ${{ steps.capturar_ip_ec2.outputs.instance_public_ip }}
-      instance_public_ip_ldap: ${{ steps.capturar_ip_ec2_ldap.outputs.instance_public_ip_ldap }}
+      instance_private_ip_ldap: ${{ steps.capturar_ip_ec2_ldap.outputs.instance_private_ip_ldap }}
       
     steps:   
       - name: Checkout  
@@ -59,7 +59,7 @@ jobs:
 
       - name: Capturar ip de la EC2 de ldap
         id: capturar_ip_ec2_ldap
-        run: echo "instance_public_ip_ldap=$(terraform output -raw instance_public_ip_ldap)" >> "$GITHUB_OUTPUT"
+        run: echo "instance_private_ip_ldap=$(terraform output -raw instance_ptivate_ip_ldap)" >> "$GITHUB_OUTPUT"
         working-directory: ./archivos-tf  
 
   #segundo job
@@ -95,19 +95,30 @@ jobs:
             "sudo bash /home/ec2-user/archivos-conf-script/deploy-docker-compose.sh"
 
       #para la instancia de ldap
-      - name: Subir carpeta con archivos necesarios
+      - name: Subir carpeta con archivos necesarios de la instancia ldap a la instancia del servidor web
         run: |
-          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-ec2-ldap ec2-user@${{ needs.despliegue.outputs.instance_public_ip_ldap }}:/home/ec2-user/archivos
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-ec2-ldap ec2-user@${{ needs.despliegue.outputs.instance_public_ip }}:/home/ec2-user/archivos-ldap
 
-      - name: lanzar contenedor de ldap
+      - name: Copiar clave privada a la instancia del servidor web para poder conectarse a la instancia de ldap
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ needs.despliegue.outputs.instance_public_ip_ldap }} << 'EOF'
-            sudo usermod -aG docker ubuntu
-            newgrp docker
-            sudo systemctl restart docker
-            sudo chmod +x ./archivos/script.sh
-            sudo ./archivos/script.sh
-            sleep 30
+          scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ needs.despliegue.outputs.instance_public_ip }}:/home/ec2-user/deploy_key.pem
+
+      # Transferir carpeta desde servidor web a LDAP usando la IP privada
+      - name: Transferir carpeta desde servidor web a LDAP
+        run: |
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} << 'EOF'
+            scp -i /home/ec2-user/deploy_key.pem -r /home/ec2-user/archivos-ldap ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }}:/home/ec2-user/archivos-ldap
+          EOF
+
+      # Lanzar el contenedor LDAP en la instancia LDAP
+      - name: Lanzar contenedor LDAP
+        run: |
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} << 'EOF'
+            ssh -i /home/ec2-user/deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }} << 'INNER_EOF'
+              sudo chmod +x /home/ec2-user/archivos-ldap/script.sh
+              sudo /home/ec2-user/archivos-ldap/script.sh
+              sleep 30
+            INNER_EOF
           EOF
 
       - name: Borrar archivo private key
