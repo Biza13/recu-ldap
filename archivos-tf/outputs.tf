@@ -4,6 +4,6 @@ output "instance_public_ip" {
 }
 
 output "instance_private_ip_ldap" {
-  description = "IP publica de instancia EC2 de ldap"
+  description = "IP privada de instancia EC2 de ldap"
   value = aws_instance.instancia_ldap.private_ip
 }
