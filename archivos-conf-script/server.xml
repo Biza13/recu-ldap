@@ -32,19 +32,22 @@
         <Engine name="Catalina" defaultHost="localhost">
             <!-- Add the JNDIRealm for LDAP authentication -->
             <Realm className="org.apache.catalina.realm.JNDIRealm"
-                   connectionURL="ldap://72.44.52.139:389"
-                   connectionName="cn=admin,dc=begona,dc=work,dc=gd"
+                   connectionURL="ldap://ldap.begona.internal:389"
+                   connectionName="uid=admin,ou=empleados,dc=begona,dc=work,dc=gd"
                    connectionPassword="admin"
-
+                   
                    userBase="ou=empleados,dc=begona,dc=work,dc=gd"
                    userSearch="(uid={0})"
                    userSubtree="true"
-
+                   
                    roleBase="ou=roles,dc=begona,dc=work,dc=gd"
                    roleName="cn"
-                   roleSearch="(uniqueMember={0})"
+                   roleSearch="(uniqueMember=uid={0},ou=empleados,dc=begona,dc=work,dc=gd)"
                    roleSubtree="true"
-                   />
+                   
+                   referrals="follow"
+                   contextFactory="com.sun.jndi.ldap.LdapCtxFactory"
+                   authentication="simple"/>
 
             <!-- Default host -->
             <Host name="localhost" appBase="webapps"

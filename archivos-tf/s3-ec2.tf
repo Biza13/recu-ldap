@@ -132,6 +132,7 @@ resource "aws_instance" "instancia_ldap" {
   subnet_id = aws_subnet.subred-privada.id
   vpc_security_group_ids = [aws_security_group.security-ldap.id]
   key_name = "deployer-key"  # coje el par de claves que ya estan en aws por el nombre
+  #private_ip    = "10.0.1.142"  # IP fija
 
   tags = {
     Name = "instancia LDAP"
