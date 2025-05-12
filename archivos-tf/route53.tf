@@ -2,7 +2,7 @@
 resource "aws_route53_zone" "private_zone" {
   name = "begona.internal"
   vpc {
-    vpc_id = aws_vpc.main.id
+    vpc_id = aws_vpc.Desarrollo-web-VPC.id
   }
   comment = "Zona DNS privada para LDAP"
 }
