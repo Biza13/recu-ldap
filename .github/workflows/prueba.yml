@@ -106,14 +106,10 @@ jobs:
             scp -o StrictHostKeyChecking=no -i /home/ec2-user/deploy_key.pem -r /home/ec2-user/archivos-ldap ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }}:/home/ec2-user/archivos-ldap
           EOF
 
-      # Copiar la clave al bastión y dejarla en ~/.ssh
-      - name: Copiar clave privada al directorio correcto en bastión
+      - name: Configurar SSH en el Bastión
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTIC_IP }} << 'EOF'
-            mkdir -p ~/.ssh
-            cp /home/ec2-user/deploy_key.pem ~/.ssh/deploy_key.pem
-            chmod 600 ~/.ssh/deploy_key.pem
-          EOF    
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTIC_IP }} \
+            "mkdir -p ~/.ssh && cp /home/ec2-user/deploy_key.pem ~/.ssh/ && chmod 600 ~/.ssh/deploy_key.pem"   
 
       - name: Crear archivo SSH config en la instancia del Bastión
         run: |
