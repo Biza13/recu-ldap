@@ -35,12 +35,10 @@
                    connectionURL="ldap://72.44.52.139:389"
                    userBase="ou=empleados,dc=begona,dc=work,dc=gd"
                    userSearch="(uid={0})"
-                   userRoleName="memberOf"
-                   roleBase="ou=roles,dc=begona,dc=work,dc=gd"
-                   roleSearch="(uniqueMember={0})"
-                   roleSubtree="true"
                    connectionName="cn=admin,dc=begona,dc=work,dc=gd"
-                   connectionPassword="admin" />
+                   connectionPassword="admin"
+                   userSubtree="true"
+                   />
 
             <!-- Default host -->
             <Host name="localhost" appBase="webapps"
