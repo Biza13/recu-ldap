@@ -120,7 +120,7 @@ jobs:
 
       - name: Ejecutar script en la instancia LDAP
         run: |
-          ssh ldap-instance "sudo chmod +x /home/ec2-user/archivos-ldap/ec2.sh && sudo /home/ec2-user/archivos-ldap/ec2.sh"
+          ssh ldap-instance "sudo chmod +x /home/ec2-user/archivos-ldap/ec2.sh && sudo /home/ec2-user/archivos-ldap/ec2.sh && chmod +x /home/ec2-user/archivos-ldap/add-ldif.sh && /home/ec2-user/archivos-ldap/add-ldif.sh"
  
       - name: Borrar archivo private key
         run: |
