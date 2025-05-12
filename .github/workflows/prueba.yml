@@ -81,13 +81,9 @@ jobs:
         run: |
           scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-conf-script ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script
 
-      - name: Subir carpeta con certificados de bego.work.gd
+      - name: Subir carpeta con certificados de begona.work.gd
         run: |
-          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-bego ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script/cert-bego
-
-      - name: Subir carpeta con certificados de bego1.work.gd
-        run: |
-          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-bego1 ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script/cert-bego1
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no cert-begona ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script/cert-begona
 
       - name: Ejecutar script como root en EC2
         run: |
