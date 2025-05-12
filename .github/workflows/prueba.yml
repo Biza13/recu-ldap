@@ -112,7 +112,7 @@ jobs:
 
       - name: Crear archivo SSH config en la instancia del Bastión
         run: |
-          ssh -i ~/.ssh/deploy_key.pem ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} << 'EOF'
+          ssh -i ~/.ssh/deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }} << 'EOF'
             mkdir -p ~/.ssh
             echo "Host ldap-instance" > ~/.ssh/config
             echo "  HostName ${{ needs.despliegue.outputs.instance_private_ip_ldap }}" >> ~/.ssh/config
