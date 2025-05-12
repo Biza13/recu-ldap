@@ -126,7 +126,7 @@ jobs:
       - name: Ejecutar script en la instancia LDAP
         run: |
           ssh -i deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }} << 'EOF'
-            ssh ldap-instance "sudo chmod +x /home/ec2-user/archivos-ldap/ec2.sh && sudo /home/ec2-user/archivos-ldap/ec2.sh && chmod +x /home/ec2-user/archivos-ldap/add-ldif.sh && /home/ec2-user/archivos-ldap/add-ldif.sh"
+            ssh ldap-instance "sudo chmod +x /home/ec2-user/archivos-ldap/ec2.sh && sudo /home/ec2-user/archivos-ldap/ec2.sh && docker exec -it ldap-container bash -c "chmod +x add-ldif.sh && docker exec -it ldap-container bash ./add-ldif.sh"
           EOF
  
       - name: Borrar archivo private key
