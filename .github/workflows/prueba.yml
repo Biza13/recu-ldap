@@ -95,10 +95,6 @@ jobs:
         run: |
           scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-ec2-ldap ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-ldap
 
-      - name: Copiar clave privada a la instancia del servidor web para poder conectarse a la instancia de ldap
-        run: |
-          scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }}:~/.ssh/deploy_key.pem
-
       - name: Copiar clave privada a la instancia del servidor web
         run: |
           scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/deploy_key.pem
@@ -109,6 +105,15 @@ jobs:
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTIC_IP }} << 'EOF'
             scp -o StrictHostKeyChecking=no -i /home/ec2-user/deploy_key.pem -r /home/ec2-user/archivos-ldap ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }}:/home/ec2-user/archivos-ldap
           EOF
+
+      # Copiar la clave al bastión y dejarla en ~/.ssh
+      - name: Copiar clave privada al directorio correcto en bastión
+        run: |
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.ELASTIC_IP }} << 'EOF'
+            mkdir -p ~/.ssh
+            cp /home/ec2-user/deploy_key.pem ~/.ssh/deploy_key.pem
+            chmod 600 ~/.ssh/deploy_key.pem
+          EOF    
 
       - name: Crear archivo SSH config en la instancia del Bastión
         run: |
