@@ -99,6 +99,10 @@ jobs:
         run: |
           scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }}:~/.ssh/deploy_key.pem
 
+      - name: Copiar clave privada a la instancia del servidor web
+        run: |
+          scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/deploy_key.pem
+
       # Transferir carpeta desde servidor web a LDAP usando la IP privada
       - name: Transferir carpeta desde servidor web a LDAP
         run: |
