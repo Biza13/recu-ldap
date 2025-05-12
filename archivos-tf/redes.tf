@@ -86,7 +86,7 @@ resource "aws_eip_association" "eip_assoc_fedora" {
 
 #crear la nat
 resource "aws_nat_gateway" "nat-gateway" {
-  allocation_id = aws_eip.NAt-gateway.id
+  allocation_id = var.id_eip_NAT
   subnet_id     = aws_subnet.subred-publica.id  //se pone la subred publica para que tenga acceso hacia afuera
 
   tags = {

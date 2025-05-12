@@ -33,3 +33,8 @@ variable "id_eip" {
   description = "id de la ip elastica"
   type = string
 }
+
+variable "id_eip_NAT" {
+  description = "id de la ip elastica para la nat"
+  type = string
+}
