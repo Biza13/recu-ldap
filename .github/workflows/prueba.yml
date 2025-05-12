@@ -108,11 +108,12 @@ jobs:
 
       - name: Configurar SSH para usar Bastion Host
         run: |
-          echo "Host ldap-instance" > ~/.ssh/config
+          mkdir -p ~/.ssh
+          echo "Host ldap-instance" >> ~/.ssh/config
           echo "  HostName ${{ needs.despliegue.outputs.instance_private_ip_ldap }}" >> ~/.ssh/config
           echo "  User ec2-user" >> ~/.ssh/config
-          echo "  IdentityFile deploy_key.pem" >> ~/.ssh/config
-          echo "  ProxyCommand ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} -W %h:%p" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/deploy_key.pem" >> ~/.ssh/config
+          echo "  ProxyCommand ssh -i ~/.ssh/deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} -W %h:%p" >> ~/.ssh/config
           chmod 600 ~/.ssh/config
 
       - name: Ejecutar script en la instancia LDAP
