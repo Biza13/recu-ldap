@@ -32,7 +32,7 @@
         <Engine name="Catalina" defaultHost="localhost">
             <!-- Add the JNDIRealm for LDAP authentication -->
             <Realm className="org.apache.catalina.realm.JNDIRealm"
-                   connectionURL="ldap://ldap.begona.internal:389"
+                   connectionURL="ldap://10.0.1.142:389"
                    connectionName="uid=admin,ou=empleados,dc=begona,dc=work,dc=gd"
                    connectionPassword="admin"
                    

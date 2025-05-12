@@ -78,12 +78,6 @@ resource "aws_eip_association" "eip_assoc_fedora" {
   instance_id   = aws_instance.instancia_fedora.id
 }
 
-#Crear un ip elastica para la NAT gateway
-/* resource "aws_eip" "NAt-gateway" {
-  depends_on = [ aws_route_table_association.rt-asociacion-publica ]
-  domain = "vpc"
-} */
-
 #crear la nat
 resource "aws_nat_gateway" "nat-gateway" {
   allocation_id = var.id_eip_NAT
