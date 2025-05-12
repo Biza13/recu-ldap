@@ -97,7 +97,7 @@ jobs:
 
       - name: Copiar clave privada a la instancia del servidor web para poder conectarse a la instancia de ldap
         run: |
-          scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/deploy_key.pem
+          scp -i deploy_key.pem -o StrictHostKeyChecking=no deploy_key.pem ec2-user@${{ secrets.ELASTIC_IP }}:~/.ssh/deploy_key.pem
 
       # Transferir carpeta desde servidor web a LDAP usando la IP privada
       - name: Transferir carpeta desde servidor web a LDAP
@@ -106,15 +106,17 @@ jobs:
             scp -o StrictHostKeyChecking=no -i /home/ec2-user/deploy_key.pem -r /home/ec2-user/archivos-ldap ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }}:/home/ec2-user/archivos-ldap
           EOF
 
-      - name: Configurar SSH para usar Bastion Host
+      - name: Crear archivo SSH config en la instancia del Bastión
         run: |
-          mkdir -p ~/.ssh
-          echo "Host ldap-instance" >> ~/.ssh/config
-          echo "  HostName ${{ needs.despliegue.outputs.instance_private_ip_ldap }}" >> ~/.ssh/config
-          echo "  User ec2-user" >> ~/.ssh/config
-          echo "  IdentityFile ~/.ssh/deploy_key.pem" >> ~/.ssh/config
-          echo "  ProxyCommand ssh -i ~/.ssh/deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} -W %h:%p" >> ~/.ssh/config
-          chmod 600 ~/.ssh/config
+          ssh -i ~/.ssh/deploy_key.pem ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} << 'EOF'
+            mkdir -p ~/.ssh
+            echo "Host ldap-instance" > ~/.ssh/config
+            echo "  HostName ${{ needs.despliegue.outputs.instance_private_ip_ldap }}" >> ~/.ssh/config
+            echo "  User ec2-user" >> ~/.ssh/config
+            echo "  IdentityFile ~/.ssh/deploy_key.pem" >> ~/.ssh/config
+            echo "  ProxyCommand ssh -i ~/.ssh/deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_public_ip }} -W %h:%p" >> ~/.ssh/config
+            chmod 600 ~/.ssh/config
+          EOF
 
       - name: Ejecutar script en la instancia LDAP
         run: |
