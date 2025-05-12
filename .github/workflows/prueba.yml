@@ -121,9 +121,8 @@ jobs:
 
       - name: Ejecutar script en la instancia LDAP
         run: |
-          ssh -tt -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.despliegue.outputs.instance_private_ip_ldap }} \
-            "sudo chmod +x /home/ec2-user/archivos-ldap/ec2.sh && sudo /home/ec2-user/archivos-ldap/ec2.sh"  
-
+          ssh ldap-instance "sudo chmod +x /home/ec2-user/archivos-ldap/ec2.sh && sudo /home/ec2-user/archivos-ldap/ec2.sh"
+ 
       - name: Borrar archivo private key
         run: |
           rm -f deploy_key.pem    
