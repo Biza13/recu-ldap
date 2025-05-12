@@ -1,18 +1,19 @@
 services:
   apache:
     #el build: .  seria para hacerlo desde un dockerfile
-    #build: .
+    build: .
     #y asi simplemente coges una imagen ya hecha de dockerhub
-    image: httpd:2.4
+    #image: httpd:2.4
     container_name: apache
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - ./httpd1.conf:/usr/local/apache2/conf/httpd.conf  
-      - ./cert-bego:/usr/local/apache2/certs/bego:ro 
-      - ./cert-bego1:/usr/local/apache2/certs/bego1:ro  
-      - ./cert-begona:/usr/local/apache2/certs/begona:ro  
+    #volumes:
+    # No pongo el archivo de configuracion porque lo pongo en el dockerfile
+    #  - ./httpd1.conf:/usr/local/apache2/conf/httpd.conf  
+    #  - ./cert-bego:/usr/local/apache2/certs/bego:ro 
+    #  - ./cert-bego1:/usr/local/apache2/certs/bego1:ro  
+    #  - ./cert-begona:/usr/local/apache2/certs/begona:ro  
     networks:
       - app-network
     depends_on:
