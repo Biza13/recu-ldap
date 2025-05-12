@@ -33,11 +33,17 @@
             <!-- Add the JNDIRealm for LDAP authentication -->
             <Realm className="org.apache.catalina.realm.JNDIRealm"
                    connectionURL="ldap://72.44.52.139:389"
-                   userBase="ou=empleados,dc=begona,dc=work,dc=gd"
-                   userSearch="(uid={0})"
                    connectionName="cn=admin,dc=begona,dc=work,dc=gd"
                    connectionPassword="admin"
+
+                   userBase="ou=empleados,dc=begona,dc=work,dc=gd"
+                   userSearch="(uid={0})"
                    userSubtree="true"
+
+                   roleBase="ou=roles,dc=begona,dc=work,dc=gd"
+                   roleName="cn"
+                   roleSearch="(uniqueMember={0})"
+                   roleSubtree="true"
                    />
 
             <!-- Default host -->
