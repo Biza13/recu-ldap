@@ -12,7 +12,7 @@ services:
       - ./httpd1.conf:/usr/local/apache2/conf/httpd.conf  
       - ./cert-bego:/usr/local/apache2/certs/bego:ro 
       - ./cert-bego1:/usr/local/apache2/certs/bego1:ro  
-      - ./cert-begona:/usr/local/apache2/certs/bego1:ro  
+      - ./cert-begona:/usr/local/apache2/certs/begona:ro  
     networks:
       - app-network
     depends_on:
