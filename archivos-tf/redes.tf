@@ -79,10 +79,10 @@ resource "aws_eip_association" "eip_assoc_fedora" {
 }
 
 #Crear un ip elastica para la NAT gateway
-resource "aws_eip" "NAt-gateway" {
+/* resource "aws_eip" "NAt-gateway" {
   depends_on = [ aws_route_table_association.rt-asociacion-publica ]
   domain = "vpc"
-}
+} */
 
 #crear la nat
 resource "aws_nat_gateway" "nat-gateway" {
