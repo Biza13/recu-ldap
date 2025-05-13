@@ -1,8 +1,0 @@
-dn: ou=roles,dc=begona,dc=work,dc=gd
-objectClass: organizationalUnit
-ou: roles
-
-dn: cn=admin,ou=roles,dc=begona,dc=work,dc=gd
-objectClass: groupOfUniqueNames
-cn: admin
-uniqueMember: uid=admin,ou=empleados,dc=begona,dc=work,dc=gd
