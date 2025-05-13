@@ -42,12 +42,13 @@
                    
                    roleBase="ou=roles,dc=begona,dc=work,dc=gd"
                    roleName="cn"
-                   roleSearch="(uniqueMember=uid={0},ou=empleados,dc=begona,dc=work,dc=gd)"
+                   roleSearch="(uniqueMember={0})"
                    roleSubtree="true"
                    
                    referrals="follow"
                    contextFactory="com.sun.jndi.ldap.LdapCtxFactory"
-                   authentication="simple"/>
+                   authentication="simple"
+                   debug="99"/>
 
             <!-- Default host -->
             <Host name="localhost" appBase="webapps"
