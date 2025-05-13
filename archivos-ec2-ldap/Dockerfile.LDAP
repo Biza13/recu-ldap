@@ -10,7 +10,6 @@ ENV LDAP_ADMIN_PASSWORD="admin"
 #copiar los archivos ldif al contenedor
 COPY ./empleados.ldif ./empleados.ldif
 COPY ./usuario.ldif ./usuario.ldif
-COPY ./roles.ldif ./roles.ldif
 
 # Copiar el script de inicialización al contenedor
 COPY ./add-ldif.sh ./add-ldif.sh
