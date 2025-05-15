@@ -33,13 +33,6 @@ resource "aws_security_group" "security" {
   }
 
   ingress {
-    from_port = 8080
-    to_port = 8080
-    protocol="tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
     from_port = 80
     to_port = 80
     protocol = "tcp"
@@ -77,18 +70,6 @@ resource "aws_instance" "instancia_fedora" {
 
   user_data = file("../archivos-conf-script/ec2.sh")
 
-  #Provisionador para copiar solo archivos !!!!solo funciona en local
-  #provisioner "file" {
-  #  source      = "../archivos-conf-script/Dockerfile"  # Ruta del directorio en tu máquina local
-  #  destination = "/home/ec2-user/Dockerfile"  # Ruta donde debe ir el directorio en la instancia
-
-    #connection {
-    #  type        = "ssh"
-    #  user        = "ec2-user"  # Asegúrate de que sea "ec2-user" para Amazon Linux
-    #  private_key = file("C:/Users/serra/.ssh/deployer-key.pem")  # Ruta a tu clave privada .pem
-    #  host        = self.public_ip  # Usa la IP pública de la instancia EC2
-    #}
-  #}
 }
 
 #GRUPO DE SEGURIDAD PARA EC2 DE LDAP

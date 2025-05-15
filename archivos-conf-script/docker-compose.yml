@@ -11,8 +11,6 @@ services:
     volumes:
     # No pongo el archivo de configuracion porque lo pongo en el dockerfile
       - ./httpd.conf:/usr/local/apache2/conf/httpd.conf  
-    #  - ./cert-bego:/usr/local/apache2/certs/bego:ro 
-    #  - ./cert-bego1:/usr/local/apache2/certs/bego1:ro  
       - ./cert-begona:/usr/local/apache2/certs/begona:ro  
     networks:
       - app-network
@@ -27,7 +25,6 @@ services:
       - "8080:8080"
     volumes:
       - ./webapps/:/usr/local/tomcat/webapps/
-    #  - ./server.xml:/usr/local/tomcat/conf/server.xml
     networks:
       - app-network
 
