@@ -8,6 +8,6 @@ cidrSubredPrivada = "10.0.1.0/24"
 
 s3 = "cubo-s3-begona"
 
-id_eip = "eipalloc-094aebace0cc087b1"
+id_eip = "eipalloc-075452fe0a8aa4be4"
 
-id_eip_NAT = "eipalloc-075452fe0a8aa4be4"
+id_eip_NAT = "eipalloc-094aebace0cc087b1"
