@@ -76,6 +76,9 @@ jobs:
           echo "${{ secrets.DEPLOYER_KEY }}" > deploy_key.pem
           chmod 600 deploy_key.pem
 
+      - name: limpiar del archivo known_hosts la ip del servidor
+        run: ssh-keygen -R ${{ secrets.ELASTIC_IP }}
+
       #para la instancia de servidor web y de aplicaciones
       - name: Subir carpeta con docker-compose y archivos necesarios
         run: |
