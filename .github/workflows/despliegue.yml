@@ -77,9 +77,9 @@ jobs:
           chmod 600 deploy_key.pem
 
       #para la instancia de servidor web y de aplicaciones
-      #- name: Subir carpeta con docker-compose y archivos necesarios
-      #  run: |
-      #    scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-conf-script ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script
+      - name: Subir carpeta con docker-compose y archivos necesarios
+        run: |
+          scp -i deploy_key.pem -r -o StrictHostKeyChecking=no archivos-conf-script ec2-user@${{ secrets.ELASTIC_IP }}:/home/ec2-user/archivos-conf-script
 
       - name: Subir carpeta con certificados de begona.work.gd
         run: |
