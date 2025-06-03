@@ -72,7 +72,7 @@ resource "aws_subnet" "subred-privada" {
   }
 }
 
-#asociar la ip elastica que tengo en aws con la instancia
+#asociar la ip elastica que tengo en aws con la instancia del servidor web
 resource "aws_eip_association" "eip_assoc_fedora" {
   allocation_id = var.id_eip
   instance_id   = aws_instance.instancia_fedora.id
